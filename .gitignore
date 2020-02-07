@@ -1,0 +1,5 @@
+*.o
+moc*
+qt*
+Makefile
+*qmake*
