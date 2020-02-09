@@ -1,9 +1,9 @@
-#include "draw_canvas.h"
+#include "canvas.h"
 
 using namespace cimg_library;
 
 // TODO - remove display, root once we don't need dimensions
-draw_canvas::draw_canvas(QWidget* parent): 
+canvas::canvas(QWidget* parent): 
 QMainWindow(parent)
 {
     canvas_width = 800;
@@ -16,7 +16,7 @@ QMainWindow(parent)
     timer->start();
 }
 
-void draw_canvas::paintEvent(QPaintEvent*)
+void canvas::paintEvent(QPaintEvent*)
 {
     QImage background(size(), QImage::Format_RGB888);
     screen_capture::screen screen = sc.fullscreen();
@@ -46,7 +46,7 @@ void draw_canvas::paintEvent(QPaintEvent*)
     paint.drawImage(0, 0, background);
 }
 
-void draw_canvas::resizeEvent(QResizeEvent*)
+void canvas::resizeEvent(QResizeEvent*)
 {
     canvas_width = width();
     canvas_height = height();

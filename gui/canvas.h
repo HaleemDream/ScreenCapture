@@ -1,5 +1,5 @@
-#ifndef _DRAW_CANVAS_H_
-#define _DRAW_CANVAS_H_
+#ifndef _CANVAS_H_
+#define _CANVAS_H_
 
 #include <QApplication>
 #include <QMainWindow>
@@ -18,11 +18,11 @@
 
 #include "../screen/screen_capture.h"
 
-class draw_canvas : public QMainWindow
+class canvas : public QMainWindow
 {
     Q_OBJECT
     public:
-        draw_canvas(QWidget* parent = 0);
+        canvas(QWidget* parent = 0);
         void paintEvent(QPaintEvent*);
         void resizeEvent(QResizeEvent*);
     private:

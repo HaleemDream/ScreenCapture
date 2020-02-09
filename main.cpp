@@ -1,9 +1,9 @@
-#include "draw_canvas.h"
+#include "gui/canvas.h"
 
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
-    draw_canvas draw;
-    draw.show();
+    canvas gui;
+    gui.show();
     return app.exec();
 }
