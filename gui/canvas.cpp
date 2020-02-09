@@ -2,14 +2,12 @@
 
 using namespace cimg_library;
 
-// TODO - remove display, root once we don't need dimensions
 canvas::canvas(QWidget* parent): 
 QMainWindow(parent)
 {
     canvas_width = 800;
     canvas_height = 600;
     
-    // need var for canvas x,y
     setGeometry(0, 0, canvas_width, canvas_height);
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(repaint()));

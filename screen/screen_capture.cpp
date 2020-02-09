@@ -3,7 +3,7 @@
 using namespace cimg_library;
 
 // TODO - need to handle case when user changes screen resolution
-// This should be able to detect the difference on start but it doesnt (For me)
+// Maybe this is fine, need to inspect later
 screen_capture::screen_capture() :
 display(XOpenDisplay(NULL)),
 root(DefaultRootWindow(display)),
