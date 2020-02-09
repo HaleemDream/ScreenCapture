@@ -24,6 +24,7 @@ class draw_canvas : public QMainWindow
     public:
         draw_canvas(QWidget* parent = 0);
         void paintEvent(QPaintEvent*);
+        void resizeEvent(QResizeEvent*);
     private:
         QTimer* timer;
         screen_capture sc;

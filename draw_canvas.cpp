@@ -46,3 +46,9 @@ void draw_canvas::paintEvent(QPaintEvent*)
     QPainter paint(this);
     paint.drawImage(0, 0, background);
 }
+
+void draw_canvas::resizeEvent(QResizeEvent*)
+{
+    canvas_width = width();
+    canvas_height = height();
+}
