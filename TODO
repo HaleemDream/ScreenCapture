@@ -1,0 +1,7 @@
+1. Find efficient screen capture (done)
+2. create seperate class to capture screen (done - screen_capture)
+3. creapte seperate class to read and display screen (done - canvas)
+4. create network classes to: (need to accept args from main - host, ip)
+    4.1 hole punch
+    4.2 send UDP/TCP (probably UDP) to client from server
+    4.3 pass incoming data canvas -> display contents of server to client
