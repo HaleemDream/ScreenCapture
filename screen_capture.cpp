@@ -34,7 +34,7 @@ screen_capture::screen screen_capture::fullscreen()
     for(size_t i = 0; i < image_capture_threads.size(); i++)
     {
         row_start = i * row_offset;
-        row_end = (row_start + row_offset) > WINDOW_HEIGHT ? WINDOW_HEIGHT : row_start + row_offset;
+        row_end = i == image_capture_threads.size() - 1 ? WINDOW_HEIGHT : row_start + row_offset;
         image_capture_threads[i] = std::thread(&screen_capture::fill_rgb_array, this, image, rgb_array, 0, WINDOW_WIDTH, row_start, row_end);
     }
     
