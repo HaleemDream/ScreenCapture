@@ -9,8 +9,8 @@
 #include <X11/Xlib.h>
 #include <X11/X.h>
 
-#define MAX_THREADS_PER_ROW   500
-#define MAX_THRADS_PER_COLUMN 500
+// TODO - improve threading
+#define THREAD_COUNT 5
 
 class screen_capture
 {
@@ -27,7 +27,7 @@ class screen_capture
         };
 
         // pointer array of XImage
-        static RGB* fullscreen();
+        RGB* fullscreen();
 
     private:
         // X11 components
@@ -37,7 +37,9 @@ class screen_capture
         int WINDOW_WIDTH;
 
         // threads to help read img
-        std::vector<std::thread>> image_capture_threads;
+        std::vector<std::thread> image_capture_threads;
+
+        void fill_rgb_array(XImage* image, RGB* arr, int row_start, int row_end, int col_start, int col_end);
 };
 
 #endif
