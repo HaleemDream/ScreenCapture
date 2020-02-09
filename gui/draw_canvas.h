@@ -16,7 +16,7 @@
 #include <X11/Xlib.h>
 #include <X11/X.h>
 
-#include "screen_capture.h"
+#include "../screen/screen_capture.h"
 
 class draw_canvas : public QMainWindow
 {

@@ -1,5 +1,4 @@
 #include "draw_canvas.h"
-#include "screen_capture.h"
 
 using namespace cimg_library;
 
