@@ -5,19 +5,13 @@ using namespace cimg_library;
 
 // TODO - remove display, root once we don't need dimensions
 draw_canvas::draw_canvas(QWidget* parent): 
-QMainWindow(parent),
-display(XOpenDisplay(NULL)),
-root(DefaultRootWindow(display))
+QMainWindow(parent)
 {
-    XWindowAttributes gwa;
-    XGetWindowAttributes(display, root, &gwa);
-
-    // TODO - remove once pass in dimensions from screen_capture
-    WINDOW_WIDTH = gwa.width;
-    WINDOW_HEIGHT = gwa.height;
-
+    canvas_width = 800;
+    canvas_height = 600;
+    
     // need var for canvas x,y
-    setGeometry(0, 0, 800, 600);
+    setGeometry(0, 0, canvas_width, canvas_height);
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(repaint()));
     timer->start();
@@ -26,25 +20,29 @@ root(DefaultRootWindow(display))
 void draw_canvas::paintEvent(QPaintEvent*)
 {
     QImage background(size(), QImage::Format_RGB888);
-    screen_capture::RGB* array = sc.fullscreen();
+    screen_capture::screen screen = sc.fullscreen();
 
-    int width = 0;
-    int height = 0;
+    screen_capture::RGB* image_array = screen.rgb_array;
+    // TODO - better names
+    int screen_width = screen.width;
+    int screen_height = screen.height;
 
-    // TODO - pass window dimensions from screen_capture
-    for(int x = 0; x < 800; x++)
+    int x_offset;
+    int y_offset;
+
+    for(int x = 0; x < canvas_width; x++)
     {
-        width = ((int) (x / 800.0 * WINDOW_WIDTH)) * WINDOW_HEIGHT;
-        for(int y = 0; y < 600; y++)
+        y_offset = ((int) ((double) x / canvas_width * screen_width)) * screen_height;
+        for(int y = 0; y < canvas_height; y++)
         {
-            height = (int) (y / 600.0 * WINDOW_HEIGHT);
-            screen_capture::RGB rgb = array[width + height];
+            x_offset = (int) ((double) y / canvas_height * screen_height);
+            screen_capture::RGB rgb = image_array[x_offset + y_offset];
             QRgb qrgb = qRgb(rgb.red, rgb.green, rgb.blue);
             background.setPixel(x, y, qrgb);
         }
     }
 
-    delete[] array;
+    delete[] image_array;
     QPainter paint(this);
     paint.drawImage(0, 0, background);
 }

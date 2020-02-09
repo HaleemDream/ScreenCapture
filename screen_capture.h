@@ -26,8 +26,14 @@ class screen_capture
             unsigned char blue;
         };
 
-        // pointer array of XImage
-        RGB* fullscreen();
+        struct screen
+        {
+            RGB* rgb_array;
+            int width;
+            int height;
+        };
+
+        screen fullscreen();
 
     private:
         // X11 components

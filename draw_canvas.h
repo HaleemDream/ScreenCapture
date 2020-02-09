@@ -26,11 +26,9 @@ class draw_canvas : public QMainWindow
         void paintEvent(QPaintEvent*);
     private:
         QTimer* timer;
-        Display* display;
-        Window root;
         screen_capture sc;
-        int WINDOW_HEIGHT;
-        int WINDOW_WIDTH;
+        int canvas_width;
+        int canvas_height;
 };
 
 #endif

@@ -3,6 +3,7 @@
 using namespace cimg_library;
 
 // TODO - need to handle case when user changes screen resolution
+// This should be able to detect the difference on start but it doesnt (For me)
 screen_capture::screen_capture() :
 display(XOpenDisplay(NULL)),
 root(DefaultRootWindow(display)),
@@ -20,7 +21,7 @@ screen_capture::~screen_capture()
 
 }
 
-screen_capture::RGB* screen_capture::fullscreen()
+screen_capture::screen screen_capture::fullscreen()
 {
     XImage* image = XGetImage(display, root, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, AllPlanes, ZPixmap);
     RGB* rgb_array = new RGB[WINDOW_HEIGHT * WINDOW_WIDTH];
@@ -45,7 +46,7 @@ screen_capture::RGB* screen_capture::fullscreen()
 
     XDestroyImage(image);
 
-    return rgb_array;
+    return screen_capture::screen{rgb_array, WINDOW_WIDTH, WINDOW_HEIGHT};
 }
 
 void screen_capture::fill_rgb_array(XImage* image, RGB* arr, int row_start, int row_end, int col_start, int col_end)
