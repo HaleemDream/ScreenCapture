@@ -3,3 +3,4 @@ moc*
 qt*
 Makefile
 *qmake*
+*.pro
