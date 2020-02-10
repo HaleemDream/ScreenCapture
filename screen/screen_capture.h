@@ -12,11 +12,6 @@
 // TODO - improve threading
 #define THREAD_COUNT 5
 
-// max FPS
-// 1000 / 60 = At the minumum, each screen capture should take 16.66ms
-#define FPS 60
-#define MIN_SCREEN_CAPTURE_TIME 1000 / FPS
-
 class screen_capture
 {
     public:
