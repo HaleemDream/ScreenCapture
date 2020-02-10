@@ -1,5 +1,9 @@
 #include "screen_capture.h"
 
+#include <ctime>
+#include <ratio>
+#include <chrono>
+
 using namespace cimg_library;
 
 // TODO - need to handle case when user changes screen resolution
@@ -23,6 +27,8 @@ screen_capture::~screen_capture()
 
 screen_capture::screen screen_capture::fullscreen()
 {
+    std::chrono::high_resolution_clock::time_point start_time = std::chrono::high_resolution_clock::now();
+
     XImage* image = XGetImage(display, root, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, AllPlanes, ZPixmap);
     RGB* rgb_array = new RGB[WINDOW_HEIGHT * WINDOW_WIDTH];
 
@@ -45,6 +51,14 @@ screen_capture::screen screen_capture::fullscreen()
     }
 
     XDestroyImage(image);
+
+    std::chrono::high_resolution_clock::time_point end_time = std::chrono::high_resolution_clock::now();
+    int time_delta = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time).count();
+
+    if(time_delta < MIN_SCREEN_CAPTURE_TIME)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(MIN_SCREEN_CAPTURE_TIME - time_delta));
+    }
 
     return screen_capture::screen{rgb_array, WINDOW_WIDTH, WINDOW_HEIGHT};
 }
