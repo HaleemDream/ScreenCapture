@@ -18,6 +18,8 @@
 
 #include "../screen/screen_capture.h"
 
+#define FPS 10
+
 class canvas : public QMainWindow
 {
     Q_OBJECT

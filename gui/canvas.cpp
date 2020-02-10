@@ -7,11 +7,11 @@ QMainWindow(parent)
 {
     canvas_width = 800;
     canvas_height = 600;
-    
     setGeometry(0, 0, canvas_width, canvas_height);
+    
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(repaint()));
-    timer->start();
+    timer->start(1000 / FPS);
 }
 
 void canvas::paintEvent(QPaintEvent*)
