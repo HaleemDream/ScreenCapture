@@ -5,3 +5,6 @@
     4.1 hole punch
     4.2 send UDP/TCP (probably UDP) to client from server
     4.3 pass incoming data canvas -> display contents of server to client
+
+
+Look into why program freezes up every once in a while.
