@@ -45,7 +45,9 @@ server::server(const char* port) : port(port)
                                   (struct sockaddr*) &client_address,
                                    &client_len);
 
-    printf("Received bytes...\n");
+    close(socket_listen);
+
+    printf("Received bytes (%d bytes): %.*s\n", bytes_received, bytes_received, read);
 }
 
 server::~server()
