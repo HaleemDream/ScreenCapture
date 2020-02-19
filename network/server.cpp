@@ -34,6 +34,18 @@ server::server(const char* port) : port(port)
     }
 
     freeaddrinfo(bind_address);
+
+    struct sockaddr_storage client_address;
+    socklen_t client_len = sizeof(client_address);
+    char read[1024];
+    int bytes_received = recvfrom(socket_listen,
+                                  read,
+                                  1024,
+                                  0,
+                                  (struct sockaddr*) &client_address,
+                                   &client_len);
+
+    printf("Received bytes...\n");
 }
 
 server::~server()
@@ -42,7 +54,7 @@ server::~server()
 }
 
 // for testing
-// int main(int argc, char** argv)
-// {
-//     server server("8080");
-// }
+int main(int argc, char** argv)
+{
+    server server("8080");
+}
