@@ -33,7 +33,7 @@ class screen_capture
             int height;
         };
 
-        screen fullscreen();
+        struct screen fullscreen();
 
     private:
         // X11 components
