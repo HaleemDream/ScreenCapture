@@ -3,7 +3,6 @@
 client::client(const char* host, const char* port)
 : host(host), port(port)
 {
-    printf("configuring remote address...\n");
     struct addrinfo hints;
     memset(&hints, 0, sizeof(hints));
     hints.ai_socktype = SOCK_DGRAM;
@@ -14,30 +13,15 @@ client::client(const char* host, const char* port)
         return;
     }
 
-    printf("Creating socket...\n");
-    int socket_peer;
-    socket_peer = socket(peer_address->ai_family,
+    socket_server = socket(peer_address->ai_family,
                          peer_address->ai_socktype,
                          peer_address->ai_protocol);
 
-    if(socket_peer < 0)
+    if(socket_server < 0)
     {
         printf("Failed to create socket\n");
         return;
     }
-
-    const char* message = "Yo meng";
-    printf("Sending message: %s\n", message);
-    int bytes_sent = sendto(socket_peer,
-                            message,
-                            strlen(message),
-                            0,
-                            peer_address->ai_addr,
-                            peer_address->ai_addrlen);
-
-    printf("Send bytes...\n");
-
-    close(socket_peer);
 }
 
 client::~client()
@@ -45,7 +29,18 @@ client::~client()
 
 }
 
-int main(int argc, char** argv)
+void client::send_dimension(int width, int height)
 {
-    client client("localhost", "8080");
+    int dimension[2] = {width, height};
+    sendto(socket_server, dimension, sizeof(dimension), 0, peer_address->ai_addr, peer_address->ai_addrlen);
 }
+
+void client::close_socket()
+{
+    close(socket_server);
+}
+
+// int main(int argc, char** argv)
+// {
+//     client client("localhost", "8080");
+// }

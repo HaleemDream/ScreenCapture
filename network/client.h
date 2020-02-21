@@ -16,7 +16,12 @@ class client
     public:
         client(const char* host, const char* port);
         ~client();
+        void send_dimension(int width, int height);
+        void get_img();
+        void close_socket();
+
     private:
+        int socket_server;
         struct addrinfo* peer_address;
         const char* host;
         const char* port;
