@@ -12,11 +12,11 @@
 // TODO - improve threading
 #define THREAD_COUNT 5
 
-class screen_capture
+class ScreenCapture
 {
     public:
-        screen_capture();
-        ~screen_capture();
+        ScreenCapture();
+        ~ScreenCapture();
 
         // struct to hold RGB values
         struct RGB
@@ -33,7 +33,7 @@ class screen_capture
             int height;
         };
 
-        struct screen get_fullscreen();
+        struct screen getFullscreen();
 
     private:
         // X11 components
@@ -45,7 +45,7 @@ class screen_capture
         // threads to help read img
         std::vector<std::thread> image_capture_threads;
 
-        void fill_rgb_array(XImage* image, RGB* arr, int row_start, int row_end, int col_start, int col_end);
+        void fillRGB(XImage* image, RGB* arr, int row_start, int row_end, int col_start, int col_end);
 };
 
 #endif

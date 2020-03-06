@@ -1,13 +1,13 @@
 #include <chrono>
 #include <cstdint>
 
-#include "screen_capture.h"
+#include "ScreenCapture.h"
 
 using namespace cimg_library;
 
 // TODO - need to handle case when user changes screen resolution
 // Maybe this is fine, need to inspect later
-screen_capture::screen_capture() :
+ScreenCapture::ScreenCapture() :
 display(XOpenDisplay(NULL)),
 root(DefaultRootWindow(display)),
 image_capture_threads(THREAD_COUNT)
@@ -19,15 +19,15 @@ image_capture_threads(THREAD_COUNT)
     WINDOW_HEIGHT = gwa.height;
 }
 
-screen_capture::~screen_capture()
+ScreenCapture::~ScreenCapture()
 {
 
 }
 
-struct screen_capture::screen screen_capture::get_fullscreen()
+struct ScreenCapture::screen ScreenCapture::getFullscreen()
 {
     XImage* image = XGetImage(display, root, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, AllPlanes, ZPixmap);
-    RGB* rgb_array = new RGB[WINDOW_HEIGHT * WINDOW_WIDTH];
+    RGB* rgb = new RGB[WINDOW_HEIGHT * WINDOW_WIDTH];
 
     int row_offset = WINDOW_HEIGHT / THREAD_COUNT;
     int row_start = 0;
@@ -38,7 +38,7 @@ struct screen_capture::screen screen_capture::get_fullscreen()
     {
         row_start = i * row_offset;
         row_end = i == image_capture_threads.size() - 1 ? WINDOW_HEIGHT : row_start + row_offset;
-        image_capture_threads[i] = std::thread(&screen_capture::fill_rgb_array, this, image, rgb_array, 0, WINDOW_WIDTH, row_start, row_end);
+        image_capture_threads[i] = std::thread(&ScreenCapture::fillRGB, this, image, rgb, 0, WINDOW_WIDTH, row_start, row_end);
     }
     
     // wait for threads to finish
@@ -48,11 +48,10 @@ struct screen_capture::screen screen_capture::get_fullscreen()
     }
 
     XDestroyImage(image);
-    
-    return screen_capture::screen{rgb_array, WINDOW_WIDTH, WINDOW_HEIGHT};
+    return ScreenCapture::screen{rgb, WINDOW_WIDTH, WINDOW_HEIGHT};
 }
 
-void screen_capture::fill_rgb_array(XImage* image, RGB* arr, int row_start, int row_end, int col_start, int col_end)
+void ScreenCapture::fillRGB(XImage* image, RGB* arr, int row_start, int row_end, int col_start, int col_end)
 {
    unsigned long red_mask = image->red_mask;
    unsigned long green_mask = image->green_mask;

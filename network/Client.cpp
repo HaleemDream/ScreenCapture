@@ -4,9 +4,9 @@
 
 #include "sys/time.h"
 
-#include "client.h"
+#include "Client.h"
 
-client::client(const char* port, const char* host)
+Client::Client(const char* port, const char* host)
 : host(host), port(port)
 {
     width = 800;
@@ -20,17 +20,17 @@ client::client(const char* port, const char* host)
     hints.ai_socktype = SOCK_DGRAM; // UDP
     hints.ai_flags = AI_PASSIVE;    // listen on all network interfaces
 
-    if(getaddrinfo(host, port, &hints, &peer_address))
+    if(getaddrinfo(host, port, &hints, &peerAddress))
     {
         printf("Err: failed to configure remote address\n");
         return;
     }
 
-    socket_server = socket(peer_address->ai_family,
-                         peer_address->ai_socktype,
-                         peer_address->ai_protocol);
+    socketServer = socket(peerAddress->ai_family,
+                         peerAddress->ai_socktype,
+                         peerAddress->ai_protocol);
 
-    if(socket_server < 0)
+    if(socketServer < 0)
     {
         printf("Failed to create socket\n");
         return;
@@ -40,37 +40,37 @@ client::client(const char* port, const char* host)
     tv.tv_sec = 0;
     tv.tv_usec = 50000;
 
-    if(setsockopt(socket_server, SOL_SOCKET, SO_RCVTIMEO,&tv, sizeof(tv)) < 0)
+    if(setsockopt(socketServer, SOL_SOCKET, SO_RCVTIMEO,&tv, sizeof(tv)) < 0)
     {
         printf("Failed to set sock option\n");
     }
 }
 
-client::~client()
+Client::~Client()
 {
     delete[] img;
-    close_socket();
+    closeSocket();
 }
 
-void client::set_dimension(int width, int height)
+void Client::setDimension(int width, int height)
 {
     this->width = width;
     this->height = height;
 }
 
-std::pair<int, int> client::get_dimension()
+std::pair<int, int> Client::getDimension()
 {
     return std::make_pair(width, height);
 }
 
-void client::send_dimension()
+void Client::sendDimension()
 {
     std::cout << "Sending dimensions" << std::endl;
     int dimension[2] = {width, height};
-    sendto(socket_server, dimension, sizeof(dimension), 0, peer_address->ai_addr, peer_address->ai_addrlen);
+    sendto(socketServer, dimension, sizeof(dimension), 0, peerAddress->ai_addr, peerAddress->ai_addrlen);
 }
 
-unsigned char* client::get_img()
+unsigned char* Client::getImg()
 {
     struct sockaddr_storage addr;
     socklen_t addr_len = sizeof(addr);
@@ -78,7 +78,7 @@ unsigned char* client::get_img()
     printf("Recv img\n");
     int bytes_recv;
     int packet_count = 0;
-    while((bytes_recv = recvfrom(socket_server, payload, PAYLOAD_SIZE, 0, (struct sockaddr*) &addr, &addr_len)) != -1)
+    while((bytes_recv = recvfrom(socketServer, payload, PAYLOAD_SIZE, 0, (struct sockaddr*) &addr, &addr_len)) != -1)
     {
         for(int i = 0; i < PAYLOAD_SIZE; i++)
         {
@@ -92,26 +92,26 @@ unsigned char* client::get_img()
     return MIN_IMG_PACKET_LOSS(packet_count * PAYLOAD_SIZE) ? img : 0;
 }
 
-void client::close_socket()
+void Client::closeSocket()
 {
-    close(socket_server);
+    close(socketServer);
 }
 
-void client::recv_test_data()
+void Client::recvTestData()
 {
     printf("Receiving data...\n");
     struct sockaddr_storage addr;
     socklen_t addr_len = sizeof(addr);
     char data[1024];
-    int bytes_recv = recvfrom(socket_server, data, 1024, 0, (struct sockaddr*) &addr, &addr_len);
+    int bytes_recv = recvfrom(socketServer, data, 1024, 0, (struct sockaddr*) &addr, &addr_len);
     printf("bytes recv = %d\n", bytes_recv);
     printf("data recv - %.*s\n", bytes_recv, data);
 }
 
-void client::send_test_data()
+void Client::sendTestData()
 {
     printf("Sending msg, 'hello'\n");
     const char* msg = "hello";
-    sendto(socket_server, msg, strlen(msg), 0, peer_address->ai_addr, peer_address->ai_addrlen);
+    sendto(socketServer, msg, strlen(msg), 0, peerAddress->ai_addr, peerAddress->ai_addrlen);
     printf("message sent\n");
 }

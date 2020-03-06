@@ -1,6 +1,6 @@
-#include "gui/canvas.h"
-#include "network/server.h"
-#include "screen/screen_capture.h"
+#include "gui/Canvas.h"
+#include "network/Server.h"
+#include "screen/ScreenCapture.h"
 
 int main(int argc, char** argv)
 {
@@ -8,22 +8,22 @@ int main(int argc, char** argv)
     {
         // server
         const char* port = argv[1];
-        server server(port);
-        screen_capture sc;
+        Server server(port);
+        ScreenCapture screenCapture;
 
         while(true)
         {
             printf("Waiting for dimension\n");
-            std::pair<int,int> dimension = server.get_dimension();
+            std::pair<int,int> dimension = server.getDimension();
             
             int width = dimension.first;
             int height = dimension.second;
             printf("Received Dimension: (%d, %d) (w,h)\n", width, height);
 
-            struct screen_capture::screen screen = sc.get_fullscreen();
+            struct ScreenCapture::screen screen = screenCapture.getFullscreen();
 
             printf("Sending img\n");
-            server.send_img(screen.rgb_array, screen.width, screen.height, width, height);
+            server.sendImg(screen.rgb_array, screen.width, screen.height, width, height);
             printf("Done sending img\n");
         }
     }
@@ -33,8 +33,8 @@ int main(int argc, char** argv)
         QApplication app(argc, argv);
         const char* port = argv[1];
         const char* host = argv[2];
-        canvas gui(port, host);
-        gui.show();
+        Canvas canvas(port, host);
+        canvas.show();
         return app.exec();
     }
 

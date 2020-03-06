@@ -1,9 +1,8 @@
 #include "stdio.h"
 
-#include "server.h"
-#include "../screen/screen_capture.h"
+#include "Server.h"
 
-server::server(const char* port) : port(port)
+Server::Server(const char* port) : port(port)
 {
     struct addrinfo hints;
     memset(&hints, 0, sizeof(hints));
@@ -11,39 +10,39 @@ server::server(const char* port) : port(port)
     hints.ai_socktype = SOCK_DGRAM; // UDP
     hints.ai_flags = AI_PASSIVE;    // listen on all network interfaces
 
-    getaddrinfo(0, port, &hints, &bind_address);
-    socket_client = socket(bind_address->ai_family,
-                           bind_address->ai_socktype,
-                           bind_address->ai_protocol);
+    getaddrinfo(0, port, &hints, &bindAddress);
+    socketClient = socket(bindAddress->ai_family,
+                           bindAddress->ai_socktype,
+                           bindAddress->ai_protocol);
     
     // invalid socket
-    if(socket_client < 0)
+    if(socketClient < 0)
     {
         printf("Error creating socket!\n");
         return;
     }
     
-    if(bind(socket_client, bind_address->ai_addr, bind_address->ai_addrlen))
+    if(bind(socketClient, bindAddress->ai_addr, bindAddress->ai_addrlen))
     {
         printf("Bind failed!\n");
         return;
     }
 
-    freeaddrinfo(bind_address);
+    freeaddrinfo(bindAddress);
 }
 
-server::~server()
+Server::~Server()
 {
-    close_socket();
-    delete bind_address;
+    closeSocket();
+    delete bindAddress;
 }
 
 // (width, height)
-std::pair<int,int> server::get_dimension()
+std::pair<int,int> Server::getDimension()
 {
-    socklen_t client_len = sizeof(client_address);
+    socklen_t client_len = sizeof(clientAddress);
     int dimension[2];
-    recvfrom(socket_client, dimension, sizeof(dimension), 0, (struct sockaddr*) &client_address, &client_len);
+    recvfrom(socketClient, dimension, sizeof(dimension), 0, (struct sockaddr*) &clientAddress, &client_len);
 
     int width = dimension[WIDTH_INDEX];
     int height = dimension[HEIGHT_INDEX];
@@ -51,23 +50,23 @@ std::pair<int,int> server::get_dimension()
     return std::make_pair(width, height);
 }
 
-void server::send_img(struct screen_capture::RGB* img, int screen_width, int screen_height,int canvas_width, int canvas_height)
+void Server::sendImg(struct ScreenCapture::RGB* img, int screenWidth, int screenHeight,int canvasWidth, int canvasHeight)
 {
     int rgb_count = 0;
     unsigned char payload[PAYLOAD_SIZE];
 
-    socklen_t client_len = sizeof(client_address);
+    socklen_t client_len = sizeof(clientAddress);
 
     int y_offset;
     int x_offset;
 
-    for(int x = 0; x < canvas_width; x++)
+    for(int x = 0; x < canvasWidth; x++)
     {
-        y_offset = ((int) ((double) x / canvas_width * screen_width)) * screen_height;
-        for(int y = 0; y < canvas_height; y++)
+        y_offset = ((int) ((double) x / canvasWidth * screenWidth)) * screenHeight;
+        for(int y = 0; y < canvasHeight; y++)
         {
-            x_offset = (int) ((double) y / canvas_height * screen_height);
-            screen_capture::RGB rgb = img[x_offset + y_offset];
+            x_offset = (int) ((double) y / canvasHeight * screenHeight);
+            ScreenCapture::RGB rgb = img[x_offset + y_offset];
                         
             payload[rgb_count * 3] = rgb.red;
             payload[rgb_count * 3 + 1] = rgb.green;
@@ -75,30 +74,30 @@ void server::send_img(struct screen_capture::RGB* img, int screen_width, int scr
 
             if(++rgb_count == PAYLOAD_SIZE / 3)
             {
-                sendto(socket_client, payload, sizeof(payload), 0, (struct sockaddr*) &client_address, client_len);
+                sendto(socketClient, payload, sizeof(payload), 0, (struct sockaddr*) &clientAddress, client_len);
                 rgb_count = 0;
             }    
         }
     }
 }
 
-void server::close_socket()
+void Server::closeSocket()
 {
-    close(socket_client);
+    close(socketClient);
 }
 
-void server::send_test_data()
+void Server::sendTestData()
 {
     const char* payload = "hello";
-    socklen_t client_len = sizeof(client_address);
-    sendto(socket_client, payload, strlen(payload), 0, (struct sockaddr*) &client_address, client_len);
+    socklen_t client_len = sizeof(clientAddress);
+    sendto(socketClient, payload, strlen(payload), 0, (struct sockaddr*) &clientAddress, client_len);
 }
 
-void server::recv_test_data()
+void Server::recvTestData()
 {
     char data[1024];
-    socklen_t client_len = sizeof(client_address);
-    int bytes_recv = recvfrom(socket_client, data, 1024, 0, (struct sockaddr*) &client_address, &client_len);
+    socklen_t client_len = sizeof(clientAddress);
+    int bytes_recv = recvfrom(socketClient, data, 1024, 0, (struct sockaddr*) &clientAddress, &client_len);
 
     printf("received: %.*s\n", bytes_recv, data);
 }
