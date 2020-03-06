@@ -19,6 +19,7 @@ int main(int argc, char** argv)
             int height = dimension.second;
             struct ScreenCapture::screen screen = screenCapture.getFullscreen();
             server.sendImg(screen.rgb_array, screen.width, screen.height, width, height);
+            delete[] screen.rgb_array;
         }
     }
     else if(argc == 3)

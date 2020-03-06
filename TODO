@@ -16,6 +16,8 @@ More on Network:
         to send a full image once and then repaint only the differences
         - need to test out/investigate capabilities of UDP for high bandwidth app
         (should full image be sent each time or should we only send the difference for performance gain)
+
+03/06/2020 - basic udp send/recv from peers implemented
     
 Note: should start watching PC usage to ensure app is light-weight
     
