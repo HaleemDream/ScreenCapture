@@ -11,20 +11,33 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "payload.h"
+
+#define MIN_PACKET_THRESHOLD 0.90
+#define MIN_IMG_PACKET_LOSS(PACKET_COUNT) (PACKET_COUNT / (width * height * 3) > MIN_PACKET_THRESHOLD)
+
 class client
 {
     public:
-        client(const char* host, const char* port);
+        client(const char* port, const char* host);
         ~client();
-        void send_dimension(int width, int height);
-        void get_img();
+        void set_dimension(int width, int height);
+        std::pair<int,int> get_dimension();
+        void send_dimension();
+        unsigned char* get_img();
         void close_socket();
+        void recv_test_data();
+        void send_test_data();
 
     private:
         int socket_server;
         struct addrinfo* peer_address;
         const char* host;
         const char* port;
+
+        int width;
+        int height;
+        unsigned char* img;
 };
 
 #endif

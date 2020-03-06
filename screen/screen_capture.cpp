@@ -1,8 +1,7 @@
-#include "screen_capture.h"
-
-#include <ctime>
-#include <ratio>
 #include <chrono>
+#include <cstdint>
+
+#include "screen_capture.h"
 
 using namespace cimg_library;
 
@@ -25,7 +24,7 @@ screen_capture::~screen_capture()
 
 }
 
-screen_capture::screen screen_capture::fullscreen()
+struct screen_capture::screen screen_capture::get_fullscreen()
 {
     XImage* image = XGetImage(display, root, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, AllPlanes, ZPixmap);
     RGB* rgb_array = new RGB[WINDOW_HEIGHT * WINDOW_WIDTH];
@@ -62,7 +61,7 @@ void screen_capture::fill_rgb_array(XImage* image, RGB* arr, int row_start, int 
    for (int x = row_start; x < row_end; x++)
       for (int y = col_start; y < col_end ; y++)
       {
-         unsigned long pixel = XGetPixel(image,x,y);
+         uint32_t pixel = XGetPixel(image,x,y);
 
          unsigned char blue = pixel & blue_mask;
          unsigned char green = (pixel & green_mask) >> 8;
