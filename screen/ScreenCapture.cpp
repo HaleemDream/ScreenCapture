@@ -21,7 +21,7 @@ image_capture_threads(THREAD_COUNT)
 
 ScreenCapture::~ScreenCapture()
 {
-
+    XCloseDisplay(display);
 }
 
 struct ScreenCapture::screen ScreenCapture::getFullscreen()

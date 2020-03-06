@@ -65,7 +65,6 @@ std::pair<int, int> Client::getDimension()
 
 void Client::sendDimension()
 {
-    std::cout << "Sending dimensions" << std::endl;
     int dimension[2] = {width, height};
     sendto(socketServer, dimension, sizeof(dimension), 0, peerAddress->ai_addr, peerAddress->ai_addrlen);
 }
@@ -75,7 +74,6 @@ unsigned char* Client::getImg()
     struct sockaddr_storage addr;
     socklen_t addr_len = sizeof(addr);
     unsigned char payload[PAYLOAD_SIZE];
-    printf("Recv img\n");
     int bytes_recv;
     int packet_count = 0;
     while((bytes_recv = recvfrom(socketServer, payload, PAYLOAD_SIZE, 0, (struct sockaddr*) &addr, &addr_len)) != -1)
@@ -86,8 +84,7 @@ unsigned char* Client::getImg()
         }
         packet_count++;
     }
-    printf("img end\n");
-
+    
     // min packet loss threshold
     return MIN_IMG_PACKET_LOSS(packet_count * PAYLOAD_SIZE) ? img : 0;
 }

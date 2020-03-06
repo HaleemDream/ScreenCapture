@@ -13,18 +13,12 @@ int main(int argc, char** argv)
 
         while(true)
         {
-            printf("Waiting for dimension\n");
             std::pair<int,int> dimension = server.getDimension();
             
             int width = dimension.first;
             int height = dimension.second;
-            printf("Received Dimension: (%d, %d) (w,h)\n", width, height);
-
             struct ScreenCapture::screen screen = screenCapture.getFullscreen();
-
-            printf("Sending img\n");
             server.sendImg(screen.rgb_array, screen.width, screen.height, width, height);
-            printf("Done sending img\n");
         }
     }
     else if(argc == 3)
